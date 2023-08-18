@@ -13,11 +13,18 @@ namespace Repo.Interface
 
         public string GenerateJWTToken(string email, string userId);
 
+        public string ForgetPassword(string email);
+
+        public bool ResetPassword(string Token, string Pass, string CPass);
+
+
+
+
+        //Review Purpose
+
         public List<UserEntity> GetAll();
 
         public UserEntity GetById(long userId);
-
-        public string ForgetPassword(UserLogin userLogin);
 
 
 

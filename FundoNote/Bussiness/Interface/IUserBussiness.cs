@@ -13,11 +13,17 @@ namespace Bussiness.Interface
 
         public string GenerateJWTToken(string email, string userId);
 
+        public string ForgetPassword(string email);
+
+        public bool ResetPassword(string Token, string Pass, string CPass);
+
+
+
+
+        //Review Portion
         public List<UserEntity> GetAll();
 
         public UserEntity GetById(long userId);
-
-        public string ForgetPassword(UserLogin userLogin);
 
 
     }

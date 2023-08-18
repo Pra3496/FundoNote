@@ -54,6 +54,45 @@ namespace Bussiness.service
         }
 
 
+
+
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                return userRepo.ForgetPassword(email);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool ResetPassword(string Token, string Pass, string CPass)
+        {
+            try
+            {
+                return userRepo.ResetPassword(Token, Pass, CPass);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //Review Portion
         public List<UserEntity> GetAll()
         {
             try
@@ -79,18 +118,6 @@ namespace Bussiness.service
         }
 
 
-        public string ForgetPassword(UserLogin userLogin)
-        {
-            try
-            {
-                return userRepo.ForgetPassword(userLogin);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
-        
     }
 }

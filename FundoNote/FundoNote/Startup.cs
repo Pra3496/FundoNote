@@ -41,14 +41,18 @@ namespace FundoNote
         {
             services.AddDbContext<FundoContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:FundoDB"]));
 
-            services.AddControllers();
-            
+          
             services.AddTransient<IUserBussiness, UserBussiness>();
             services.AddTransient<IUserRepo, UserRepo>();
 
+            
+            services.AddTransient<INoteRepository, NoteRepository>();
+            services.AddTransient<INoteBussiness, NoteBussiness>();
+
+            services.AddControllers();
 
             //JWT Athuntication
-          
+
             services.AddAuthentication(au =>
             {
                 au.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -127,8 +131,8 @@ namespace FundoNote
 
             app.UseRouting();   
 
-          
-
+            
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

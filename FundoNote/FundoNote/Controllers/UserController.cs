@@ -31,17 +31,17 @@ namespace FundoNote.Controllers
         private readonly AppSettings _appSettings;
 
 
-       
+
 
         public UserController(IUserBussiness userBussiness)
         {
             this.userBussiness = userBussiness;
-            
+
         }
 
 
 
-       
+
         [HttpPost]
         [Route("Register")]
         public IActionResult UserRegistration(UserRegestrationModel model)
@@ -59,7 +59,7 @@ namespace FundoNote.Controllers
                     return BadRequest(new { sucess = false, message = "User Registration Unsuccessfully" });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -75,23 +75,23 @@ namespace FundoNote.Controllers
 
                 if (Login != null)
                 {
-               
+
                     return this.Ok(new { success = true, message = $"login successful for {userLogin.Email}", token = Login });
                 }
                 else
                 {
-                    
+
                     return BadRequest(new { Success = false, message = $"login failed for {userLogin.Email}" });
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
 
-        
+
         [HttpGet]
         [Route("Users")]
         public IActionResult Users()
@@ -99,7 +99,7 @@ namespace FundoNote.Controllers
             try
             {
                 List<UserEntity> GetAll = userBussiness.GetAll();
-                
+
                 if (GetAll != null)
                 {
                     return this.Ok(new { success = true, message = "Retrive All Successful ", data = GetAll });
@@ -109,7 +109,7 @@ namespace FundoNote.Controllers
                 else
                 {
 
-                    return this.Ok(new { success = true, message = "Retrive All Unsuccessful "});
+                    return this.Ok(new { success = true, message = "Retrive All Unsuccessful " });
 
                 }
             }
@@ -149,15 +149,15 @@ namespace FundoNote.Controllers
 
      */
         [HttpPost]
-        [Route("forget-password")]
-        public IActionResult ForgetPassword(UserLogin model)
+        [Route("forget-password/{email}")]
+        public IActionResult ForgetPassword(string email)
         {
             try
             {
 
-                var result = userBussiness.ForgetPassword(model);
-    
-            if (result != null)
+                var result = userBussiness.ForgetPassword(email);
+
+                if (result != null)
                 {
                     return Ok(new { sucess = true, message = "Forget Password Token Generated Successfully", Token = result });
                 }
@@ -171,6 +171,34 @@ namespace FundoNote.Controllers
                 throw ex;
             }
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut]
+        [Route("reset-password/{pass}/{cpass}/{token}")]
+        public IActionResult ResetPassword(string pass, string cpass, string token)
+        {
+            try
+            {
+                string GetEmail = User.FindFirst(ClaimTypes.Email).Value.ToString();
+
+                var result = userBussiness.ResetPassword(token, pass, cpass);
+
+                if (result == true)
+                {
+                    return Ok(new { sucess = true, message = "Forget Password Token Generated Successfully" });
+                }
+                else
+                {
+                    return BadRequest(new { sucess = false, message = "Forget Password Unsuccessfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        
+        
 
 
 

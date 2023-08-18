@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
+using Newtonsoft.Json.Linq;
 
 namespace Repo.Service
 {
@@ -154,7 +155,7 @@ namespace Repo.Service
                     new Claim[]
                     {
                         new Claim(ClaimTypes.Email, email),
-                        new Claim(ClaimTypes.UserData, userId)
+                        new Claim("UserID", userId)
                     }
                     
                     ),
@@ -168,28 +169,70 @@ namespace Repo.Service
         }
 
 
-        public string ForgetPassword(UserLogin userLogin)
+        public string ForgetPassword(string email)
         {
             try
             {
                 UserEntity user = new UserEntity();
 
 
-                user = fundoContext.Users.FirstOrDefault(x => x.Email == userLogin.Email);
+                user = fundoContext.Users.FirstOrDefault(x => x.Email == email);
                 
                 string userId = user.UserID.ToString();
-                string email = userLogin.Email;
 
+                
 
                 if (user != null)
                 {
+                    string Token = GenerateJWTToken(email, userId);
 
+                    MSMQService sMQService = new MSMQService();
 
-                    return GenerateJWTToken(email, userId);
+                    sMQService.sendData2Queue(Token);
+
+                    return Token;
                 }
                 else
                 {
                     return null;
+                }
+
+            }
+            catch
+            {
+                throw;
+            }
+
+
+        }
+
+        public bool ResetPassword(string Token, string Pass, string CPass)
+        {
+
+            string GetEmail = jwtToken(Token);
+            //string GetuserId = User.FindFirst("UserID").Value.ToString();
+
+            try
+            {
+                UserEntity user = new UserEntity();
+
+
+                user = fundoContext.Users.FirstOrDefault(x => x.Email == GetEmail);
+                
+                
+                if (user != null && Pass == CPass)
+                {
+                    user.Password = EncryptPass(Pass);
+
+                    fundoContext.Users.Update(user);
+
+                    fundoContext.SaveChanges();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
 
             }
@@ -236,6 +279,15 @@ namespace Repo.Service
 
                 throw;
             }
+        }
+
+        public string jwtToken(string token)
+        {
+            var decodedToken = token;
+            var handlaer = new JwtSecurityTokenHandler();
+            var jsonToken = handlaer.ReadJwtToken(decodedToken);
+            var result = jsonToken.Claims.FirstOrDefault().Value;
+            return result;
         }
 
 

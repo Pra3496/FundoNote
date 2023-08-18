@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Common.Model
 {
-    public class GetById
+    public class ForgetModel
     {
-        public long UserId { get; set; }
+        public string Email { get; set; }
     }
 }
