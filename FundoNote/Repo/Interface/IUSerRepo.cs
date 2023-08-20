@@ -22,7 +22,7 @@ namespace Repo.Interface
 
         //Review Purpose
 
-        public List<UserEntity> GetAll();
+        public IEnumerable<UserEntity> GetAll();
 
         public UserEntity GetById(long userId);
 

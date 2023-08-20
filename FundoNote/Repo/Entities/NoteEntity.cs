@@ -27,7 +27,7 @@ namespace Repo.Entities
 
         public bool IsTrash { get; set; }
 
-        public DateTime RemindMe { get; set; }
+        public DateTime? RemindMe { get; set; }
 
         public DateTime? CreateTime { get; set; }
 

@@ -96,12 +96,11 @@ namespace Repo.Service
             }
         }
 
-        public List<UserEntity> GetAll()
+        public IEnumerable<UserEntity> GetAll()
         {
             try
             {
                 var users = fundoContext.Users.ToList();
-
 
 
                 if (users != null)

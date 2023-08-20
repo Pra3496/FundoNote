@@ -11,5 +11,11 @@ namespace Repo.Interface
     public interface INoteRepository 
     {
         public NoteEntity CreateNote(NoteModel model, long UserId);
+
+        public List<NoteEntity> GetAll(long UserId);
+
+        public NoteEntity UpdateNote(NoteModel model, long NoteId);
+
+        public bool RemoveNote(long NoteId, long UserId);
     }
 }

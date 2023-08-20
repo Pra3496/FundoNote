@@ -28,5 +28,42 @@ namespace Bussiness.service
                 throw ex;
             }
         }
+
+        public List<NoteEntity> GetAll(long UserId)
+        {
+            try
+            {
+                return noteRepository.GetAll(UserId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity UpdateNote(NoteModel model, long NoteId)
+        {
+            try
+            {
+                return noteRepository.UpdateNote(model, NoteId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool RemoveNote(long NoteId, long UserId)
+        {
+            try
+            {
+                return noteRepository.RemoveNote(NoteId, UserId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }

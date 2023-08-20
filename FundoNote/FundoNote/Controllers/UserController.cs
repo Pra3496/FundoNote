@@ -98,7 +98,7 @@ namespace FundoNote.Controllers
         {
             try
             {
-                List<UserEntity> GetAll = userBussiness.GetAll();
+                IEnumerable<UserEntity> GetAll = userBussiness.GetAll();
 
                 if (GetAll != null)
                 {

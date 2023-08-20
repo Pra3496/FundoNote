@@ -13,7 +13,7 @@ namespace Common.Model
         public bool IsArchive { get; set; }
         public bool IsPin { get; set; }
         public bool IsTrash { get; set; }
-        public DateTime RemindMe { get; set; }
+        public DateTime? RemindMe { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
 

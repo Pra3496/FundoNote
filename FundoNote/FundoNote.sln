@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FundoNote", "FundoNote\FundoNote.csproj", "{59D199A9-D278-43D7-8ABF-FEB4A2706C68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundoNote", "FundoNote\FundoNote.csproj", "{59D199A9-D278-43D7-8ABF-FEB4A2706C68}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4577E9E3-5364-48AC-85AC-6BD51E1EDD8C} = {4577E9E3-5364-48AC-85AC-6BD51E1EDD8C}
+		{7A848001-2C68-4825-B3C7-55830B57463A} = {7A848001-2C68-4825-B3C7-55830B57463A}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repo", "Repo\Repo.csproj", "{4577E9E3-5364-48AC-85AC-6BD51E1EDD8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repo", "Repo\Repo.csproj", "{4577E9E3-5364-48AC-85AC-6BD51E1EDD8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{7A848001-2C68-4825-B3C7-55830B57463A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{7A848001-2C68-4825-B3C7-55830B57463A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bussiness", "Bussiness\Bussiness.csproj", "{8DF63E5B-1D52-4E71-8223-84AB627BF9E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bussiness", "Bussiness\Bussiness.csproj", "{8DF63E5B-1D52-4E71-8223-84AB627BF9E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,8 @@
 ﻿using Bussiness.Interface;
+using Common;
 using Common.Model;
 using EFCoreCodeFirstSample.Models;
+using Newtonsoft.Json.Linq;
 using Repo.Interface;
 using System;
 using System.Collections.Generic;
@@ -81,19 +83,8 @@ namespace Bussiness.service
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
         //Review Portion
-        public List<UserEntity> GetAll()
+        public IEnumerable<UserEntity> GetAll()
         {
             try
             {

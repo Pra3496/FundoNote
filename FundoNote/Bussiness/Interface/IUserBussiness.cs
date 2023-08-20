@@ -21,7 +21,7 @@ namespace Bussiness.Interface
 
 
         //Review Portion
-        public List<UserEntity> GetAll();
+        public IEnumerable<UserEntity> GetAll();
 
         public UserEntity GetById(long userId);
 
