@@ -1,5 +1,8 @@
-﻿using Common.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Common.Model;
 using EFCoreCodeFirstSample.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Repo.Context;
 using Repo.Entities;
@@ -7,6 +10,7 @@ using Repo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 
 namespace Repo.Service
@@ -30,19 +34,13 @@ namespace Repo.Service
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                model.CreateTime = DateTime.UtcNow;
-                model.UpdateTime = DateTime.UtcNow;
-
                 noteEntity.Tittle = model.Tittle;
                 noteEntity.Note = model.Note;
                 noteEntity.Color = model.Color;
                 noteEntity.RemindMe = model.RemindMe;
-                noteEntity.Image = model.Image;
-                noteEntity.IsArchive = model.IsArchive;
-                noteEntity.IsPin = model.IsPin;
-                noteEntity.IsTrash = model.IsTrash;
-                noteEntity.CreateTime = model.CreateTime;
-                noteEntity.UpdateTime = model.UpdateTime;
+
+                noteEntity.CreateTime = DateTime.Now;
+                noteEntity.UpdateTime = DateTime.Now;
                 noteEntity.userId = UserId;
 
                 if(noteEntity != null)
@@ -65,7 +63,7 @@ namespace Repo.Service
            
         }
 
-        public List<NoteEntity> GetAll(long UserId)
+        public IEnumerable<NoteEntity> GetAll(long UserId)
         {
             try
             {
@@ -88,29 +86,20 @@ namespace Repo.Service
             }
         }
 
-        public NoteEntity UpdateNote(NoteModel model, long NoteId)
+        public NoteEntity UpdateNote(NoteUpdateModel model, long NoteId, long UserId)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == model.userId && x.NoteId == NoteId);
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == UserId && x.NoteId == NoteId);
 
 
                 if(noteEntity != null)
                 {
                     noteEntity.Tittle = model.Tittle;
                     noteEntity.Note = model.Note;
-                    noteEntity.Color = model.Color;
-                    noteEntity.RemindMe = model.RemindMe;
-                    noteEntity.Image = model.Image;
-                    noteEntity.IsArchive = model.IsArchive;
-                    noteEntity.IsPin = model.IsPin;
-                    noteEntity.IsTrash = model.IsTrash;
                     noteEntity.UpdateTime = DateTime.Now;
-                    noteEntity.userId = model.userId;
-
-                    //context.Notes.Update(noteEntity);
 
                     context.SaveChanges();
 
@@ -137,7 +126,6 @@ namespace Repo.Service
         {
             try
             {
-                NoteEntity noteEntity = new NoteEntity();
 
                 var user = context.Notes.FirstOrDefault(x => x.NoteId == NoteId && x.userId == UserId);
 
@@ -164,6 +152,250 @@ namespace Repo.Service
                 throw ex;
             }
         }
+
+        public NoteEntity IsArchive(long NoteId, long userId)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+
+
+                if (noteEntity != null)
+                {
+                    if(noteEntity.IsArchive == false)
+                    {
+                        noteEntity.IsArchive = true;
+                    }
+                    else
+                    {
+                        noteEntity.IsArchive = false;
+                    }
+                   
+                    context.Notes.Update(noteEntity);
+
+                    context.SaveChanges();
+
+                    return noteEntity;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity IsPin(long NoteId, long userId)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+
+
+                if (noteEntity != null)
+                {
+                    if (noteEntity.IsPin == false)
+                    {
+                        noteEntity.IsPin = true;
+                    }
+                    else
+                    {
+                        noteEntity.IsPin = false;
+                    }
+
+                    context.Notes.Update(noteEntity);
+
+                    context.SaveChanges();
+
+                    return noteEntity;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity IsTrash(long NoteId, long userId)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+
+
+                if (noteEntity != null)
+                {
+                    if (noteEntity.IsTrash == false)
+                    {
+                        noteEntity.IsTrash = true;
+                    }
+                    else
+                    {
+                        noteEntity.IsTrash = false;
+                    }
+
+                    context.Notes.Update(noteEntity);   
+
+                    context.SaveChanges();
+
+                    return noteEntity;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity ChangeColor(string color, long NoteId, long userId)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+
+
+                if (noteEntity != null)
+                {
+                   
+                    noteEntity.Color = color;
+               
+                    context.Notes.Update(noteEntity);
+
+                    context.SaveChanges();
+
+                    return noteEntity;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity SetReminder(long NoteId, long userId, DateTime date)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+
+
+                if (noteEntity != null)
+                {
+                    noteEntity.RemindMe = date;
+
+                    context.Notes.Update(noteEntity);
+
+                    context.SaveChanges();
+
+                    return noteEntity;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public NoteEntity UploadImage(long userId, long NoteId, IFormFile image)
+        {
+            try
+            {
+                Account cloudinaryAccount = new Account(
+                  Iconfiguration["Cloudinary:CloudName"],
+                  Iconfiguration["Cloudinary:APIkey"],
+                  Iconfiguration["Cloudinary:cloudAPISecret"]
+                 );
+
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+
+                if (noteEntity != null)
+                {
+                    Cloudinary cloudinary = new Cloudinary(cloudinaryAccount);
+
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(image.FileName, image.OpenReadStream()),
+                        Transformation = new Transformation().Crop("fit").Gravity("face"),
+                    };
+
+                    string uploadResult = cloudinary.Upload(uploadParams).SecureUrl.ToString();
+
+                    noteEntity.Image = uploadResult;
+
+                    context.Update(noteEntity);
+
+                    context.SaveChanges();
+
+                    return noteEntity;
+                }
+                else
+                {
+                    return noteEntity;
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw ex; 
+            }
+        }
+
 
     }
 

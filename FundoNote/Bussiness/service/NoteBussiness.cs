@@ -1,5 +1,6 @@
 ﻿using Bussiness.Interface;
 using Common.Model;
+using Microsoft.AspNetCore.Http;
 using Repo.Entities;
 using Repo.Interface;
 using System;
@@ -29,7 +30,7 @@ namespace Bussiness.service
             }
         }
 
-        public List<NoteEntity> GetAll(long UserId)
+        public IEnumerable<NoteEntity> GetAll(long UserId)
         {
             try
             {
@@ -41,11 +42,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity UpdateNote(NoteModel model, long NoteId)
+        public NoteEntity UpdateNote(NoteUpdateModel model, long NoteId, long UserId)
         {
             try
             {
-                return noteRepository.UpdateNote(model, NoteId);
+                return noteRepository.UpdateNote(model, NoteId, UserId);
             }
             catch (Exception ex)
             {
@@ -64,6 +65,78 @@ namespace Bussiness.service
                 throw ex;
             }
 
+        }
+
+        public NoteEntity IsArchive(long NoteId, long userId)
+        {
+            try
+            {
+                return noteRepository.IsArchive(NoteId, userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity IsPin(long NoteId, long userId)
+        {
+            try
+            {
+                return noteRepository.IsPin(NoteId, userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity IsTrash(long NoteId, long userId)
+        {
+            try
+            {
+                return noteRepository.IsTrash(NoteId, userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity ChangeColor(string color, long NoteId, long userId)
+        {
+            try
+            {
+                return noteRepository.ChangeColor(color, NoteId, userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity SetReminder(long NoteId, long userId, DateTime date)
+        {
+            try
+            {
+                return noteRepository.SetReminder(NoteId, userId, date);    
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity UploadImage(long userId, long NoteId, IFormFile image)
+        {
+            try
+            {
+                return noteRepository.UploadImage(userId, NoteId, image);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

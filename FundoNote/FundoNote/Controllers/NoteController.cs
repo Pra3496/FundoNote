@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repo.Entities;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -32,8 +33,7 @@ namespace FundoNote.Controllers
         {
             try
             {
-                //long UserId = Convert.ToInt64(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-
+              
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
                 var result = this.noteBussiness.CreateNote(model, UserId);
@@ -83,15 +83,15 @@ namespace FundoNote.Controllers
 
         [HttpPut]
         [Route("UpdateNote")]
-        public IActionResult UpdateNote(NoteModel model, long NoteId)
+        public IActionResult UpdateNote(NoteUpdateModel model, long NoteId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                model.userId = UserId;
+               
 
-                var result = this.noteBussiness.UpdateNote(model, NoteId);
+                var result = this.noteBussiness.UpdateNote(model, NoteId, UserId);
 
 
                 if (result != null)
@@ -136,6 +136,134 @@ namespace FundoNote.Controllers
                 throw ex;
             }
         }
+
+
+        [HttpPatch]
+        [Route("IsAchive")]
+        public IActionResult GetArchive(long NoteId)
+        {
+            try
+            {
+                long UserId = long.Parse(User.FindFirst("UserID").Value);
+
+                var result = this.noteBussiness.IsArchive(NoteId, UserId);
+
+                if (result != null)
+                {
+                    return Ok(new { sucess = true, message = "Note Update Successfully", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { sucess = false, message = "Note Update Unsuccessfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPatch]
+        [Route("IsPin")]
+        public IActionResult GetPin(long NoteId)
+        {
+            try
+            {
+                long UserId = long.Parse(User.FindFirst("UserID").Value);
+
+                var result = this.noteBussiness.IsPin(NoteId, UserId);
+
+                if (result != null)
+                {
+                    return Ok(new { sucess = true, message = "Note Update Successfully", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { sucess = false, message = "Note Update Unsuccessfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPatch]
+        [Route("IsTrash")]
+        public IActionResult GetIsTrash(long NoteId)
+        {
+            try
+            {
+                long UserId = long.Parse(User.FindFirst("UserID").Value);
+
+                var result = this.noteBussiness.IsTrash(NoteId, UserId);
+
+                if (result != null)
+                {
+                    return Ok(new { sucess = true, message = "Note Update Successfully", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { sucess = false, message = "Note Update Unsuccessfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPatch]
+        [Route("ChangeColor")]
+        public IActionResult ChangeColor(string color, long NoteId)
+        {
+            try
+            {
+                long UserId = long.Parse(User.FindFirst("UserID").Value);
+
+                var result = this.noteBussiness.ChangeColor(color, NoteId, UserId); 
+
+                if (result != null)
+                {
+                    return Ok(new { sucess = true, message = "Note Update Successfully", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { sucess = false, message = "Note Update Unsuccessfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPatch]
+        [Route("Uploadimage")]
+        public IActionResult UploadImage(long NoteId, IFormFile image)
+        {
+            try
+            {
+                long UserId = long.Parse(User.FindFirst("UserID").Value);
+
+                var result = this.noteBussiness.UploadImage(UserId, NoteId, image);
+
+                if (result != null)
+                {
+                    return Ok(new { sucess = true, message = "Note Update Successfully", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { sucess = false, message = "Note Update Unsuccessfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
 
 
 
