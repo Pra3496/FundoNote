@@ -49,6 +49,12 @@ namespace FundoNote
             services.AddTransient<INoteRepository, NoteRepository>();
             services.AddTransient<INoteBussiness, NoteBussiness>();
 
+
+            services.AddTransient<IColabRepository, ColabRepository>();
+            services.AddTransient<IColabBussiness, ColabBussiness>();
+
+
+
             services.AddControllers();
 
             //JWT Athuntication
