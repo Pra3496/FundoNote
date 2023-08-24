@@ -72,7 +72,7 @@ namespace FundoNote.Controllers
                 if (result != null)
                 {
 
-                    return Ok(new { success = true, message = "Login Successful", data = result });
+                    return this.Ok(new { success = true, message = "Retrive All Successful ", data = result });
                 }
                 else
                 {

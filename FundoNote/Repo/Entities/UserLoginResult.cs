@@ -7,8 +7,8 @@ namespace Repo.Entities
 {
     public class UserLoginResult
     {
-        public UserEntity userEntity;
+        public UserEntity userEntity { get; set; }  
 
-        public string Token;
+        public string Token { get; set; }
     }
 }

@@ -83,12 +83,11 @@ namespace Repo.Service
 
                 if (user != null && Dpassword == userLogin.Password)
                 {
-                    UserLoginResult userLoginResult = new UserLoginResult();
-
-                    userLoginResult.userEntity = user;
-                    userLoginResult.Token = GenerateJWTToken(email, userId);
-                    return userLoginResult;
-                  
+                    return new UserLoginResult()
+                    {
+                        userEntity = user,
+                        Token = GenerateJWTToken(email, userId)
+                    };
                 }
                 else
                 {
