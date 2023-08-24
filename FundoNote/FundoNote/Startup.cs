@@ -43,7 +43,7 @@ namespace FundoNote
 
           
             services.AddTransient<IUserBussiness, UserBussiness>();
-            services.AddTransient<IUserRepo, UserRepo>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             
             services.AddTransient<INoteRepository, NoteRepository>();

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace FundoNote.Controllers
 {
@@ -27,11 +28,6 @@ namespace FundoNote.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBussiness userBussiness;
-
-        private readonly AppSettings _appSettings;
-
-
-
 
         public UserController(IUserBussiness userBussiness)
         {
@@ -43,12 +39,12 @@ namespace FundoNote.Controllers
 
 
         [HttpPost]
-        [Route("Register")]
-        public IActionResult UserRegistration(UserRegestrationModel model)
+        [Route("register")]
+        public async Task<IActionResult> UserRegistration(UserRegestrationModel model)
         {
             try
             {
-                var result = userBussiness.UserRegistration(model);
+                var result = await userBussiness.UserRegistration(model);
 
                 if (result != null)
                 {
@@ -66,22 +62,22 @@ namespace FundoNote.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
-        public IActionResult Login(UserLogin userLogin)
+        [Route("login")]
+        public async Task<IActionResult> Login(UserLogin userLogin)
         {
             try
             {
-                string Login = userBussiness.Login(userLogin);
+                var result = await userBussiness.Login(userLogin);
 
-                if (Login != null)
+                if (result != null)
                 {
 
-                    return this.Ok(new { success = true, message = $"login successful for {userLogin.Email}", token = Login });
+                    return Ok(new { success = true, message = "Login Successful", data = result });
                 }
                 else
                 {
 
-                    return BadRequest(new { Success = false, message = $"login failed for {userLogin.Email}" });
+                    return BadRequest(new { Success = false, message = "Login Unsuccessful" });
 
                 }
             }
@@ -93,16 +89,15 @@ namespace FundoNote.Controllers
 
 
         [HttpGet]
-        [Route("Users")]
-        public IActionResult Users()
+        public async Task<IActionResult> Users()
         {
             try
             {
-                IEnumerable<UserEntity> GetAll = userBussiness.GetAll();
+                var result = await userBussiness.GetAll();
 
-                if (GetAll != null)
+                if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "Retrive All Successful ", data = GetAll });
+                    return this.Ok(new { success = true, message = "Retrive All Successful ", data = result });
 
 
                 }
@@ -119,37 +114,9 @@ namespace FundoNote.Controllers
             }
         }
 
-        /*
         
-        [HttpGet("")]
-        [Route("GetById")]
-        public IActionResult GetById([FromQuery]long getById)
-            {
-            try
-            {
-                var user = userBussiness.GetById(getById);
-
-                if (user != null)
-                {
-
-                    return this.Ok(new { success = true, message = "User Found successful ", data = user });
-                }
-                else
-                {
-
-                    return BadRequest(new { Success = false, message = "User Not Found" });
-
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-     */
         [HttpPost]
-        [Route("forget-password/{email}")]
+        [Route("forgetpassword")]
         public IActionResult ForgetPassword(string email)
         {
             try
@@ -159,11 +126,11 @@ namespace FundoNote.Controllers
 
                 if (result != null)
                 {
-                    return Ok(new { sucess = true, message = "Forget Password Token Generated Successfully", Token = result });
+                    return Ok(new { sucess = true, message = "Forget Password Done Successfully", Token = result });
                 }
                 else
                 {
-                    return BadRequest(new { sucess = false, message = "Forget Password Unsuccessfully" });
+                    return BadRequest(new { sucess = false, message = "Forget Password Done Unsuccessfully" });
                 }
             }
             catch (Exception ex)
@@ -171,24 +138,25 @@ namespace FundoNote.Controllers
                 throw ex;
             }
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        [Authorize]
         [HttpPut]
-        [Route("reset-password/{pass}/{cpass}/{token}")]
-        public IActionResult ResetPassword(string pass, string cpass, string token)
+        [Route("resetpassword")]
+        public async Task<IActionResult> ResetPassword(string pass, string cpass)
         {
             try
             {
-                string GetEmail = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                long userId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = userBussiness.ResetPassword(token, pass, cpass);
+                var result = await userBussiness.ResetPassword(userId, pass, cpass);
 
                 if (result == true)
                 {
-                    return Ok(new { sucess = true, message = "Forget Password Token Generated Successfully" });
+                    return Ok(new { sucess = true, message = "Password Reset Successfully" });
                 }
                 else
                 {
-                    return BadRequest(new { sucess = false, message = "Forget Password Unsuccessfully" });
+                    return BadRequest(new { sucess = false, message = "Password Reset Unsuccessfully" });
                 }
             }
             catch (Exception ex)

@@ -3,27 +3,28 @@ using Common;
 using Common.Model;
 using EFCoreCodeFirstSample.Models;
 using Newtonsoft.Json.Linq;
+using Repo.Entities;
 using Repo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Bussiness.service
 {
     public class UserBussiness : IUserBussiness
     {
-        private readonly IUserRepo userRepo;
+        private readonly IUserRepository userRepo;
 
-        public UserBussiness(IUserRepo userRepo)
+        public UserBussiness(IUserRepository userRepo)
         {
             this.userRepo = userRepo;
         }
-
-        public UserEntity UserRegistration(UserRegestrationModel userResgistrationModel)
+        public async Task<UserEntity> UserRegistration(UserRegestrationModel userResgistrationModel)
         {
             try
             {
-                return userRepo.UserRegistration(userResgistrationModel);
+                return await userRepo.UserRegistration(userResgistrationModel);
             }
             catch
             {
@@ -31,11 +32,11 @@ namespace Bussiness.service
             }
         }
 
-        public string Login(UserLogin userLogin)
+        public async Task<UserLoginResult> Login(UserLogin userLogin)
         {
             try
             {
-                return userRepo.Login(userLogin);
+                return await userRepo.Login(userLogin);
             }
             catch (Exception)
             {
@@ -43,38 +44,11 @@ namespace Bussiness.service
             }
         }
 
-        public string GenerateJWTToken(string email, string userId)
+        public async Task<IEnumerable<UserEntity>> GetAll()
         {
             try
             {
-                return userRepo.GenerateJWTToken(email, userId);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-
-
-
-        public string ForgetPassword(string email)
-        {
-            try
-            {
-                return userRepo.ForgetPassword(email);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public bool ResetPassword(string Token, string Pass, string CPass)
-        {
-            try
-            {
-                return userRepo.ResetPassword(Token, Pass, CPass);
+                return await userRepo.GetAll();
             }
             catch (Exception)
             {
@@ -83,12 +57,11 @@ namespace Bussiness.service
         }
 
 
-        //Review Portion
-        public IEnumerable<UserEntity> GetAll()
+        public async Task<string> ForgetPassword(string email)
         {
             try
             {
-                return userRepo.GetAll();
+                return await userRepo.ForgetPassword(email);
             }
             catch (Exception)
             {
@@ -96,19 +69,17 @@ namespace Bussiness.service
             }
         }
 
-        public UserEntity GetById(long userId)
+        public async Task<bool> ResetPassword(long UserId, string Pass, string CPass)
         {
             try
             {
-                return userRepo.GetById(userId);
+                return await userRepo.ResetPassword(UserId, Pass, CPass);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
-
-
 
     }
 }

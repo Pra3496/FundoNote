@@ -12,24 +12,27 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Repo.Entities;
 
 namespace Repo.Service
 {
-    public class UserRepo : IUserRepo
+    public class UserRepository : IUserRepository
     {
 
         public readonly IConfiguration Iconfiguration;
 
         private readonly FundoContext fundoContext;
 
-        public UserRepo(FundoContext fundoContext, IConfiguration Iconfiguration)
+        public UserRepository(FundoContext fundoContext, IConfiguration Iconfiguration)
         {
             this.fundoContext = fundoContext;
             this.Iconfiguration = Iconfiguration;
         }
         
 
-        public UserEntity UserRegistration(UserRegestrationModel userResgistrationModel)
+        public async Task <UserEntity> UserRegistration(UserRegestrationModel userResgistrationModel)
         {
             try
             {
@@ -42,9 +45,9 @@ namespace Repo.Service
 
                 userEntity.Password = EncryptPass(userResgistrationModel.Password);
 
-                fundoContext.Users.Add(userEntity);
+                await fundoContext.Users.AddAsync(userEntity);
 
-                fundoContext.SaveChanges();
+                await fundoContext.SaveChangesAsync();
 
 
                 if(userEntity != null)
@@ -66,13 +69,13 @@ namespace Repo.Service
         }
 
 
-        public string Login(UserLogin userLogin)
+        public async Task<UserLoginResult> Login(UserLogin userLogin)
         {
             try
             {
                 UserEntity user = new UserEntity();
 
-                user = fundoContext.Users.FirstOrDefault(x => x.Email == userLogin.Email);
+                user = await fundoContext.Users.FirstOrDefaultAsync(x => x.Email == userLogin.Email);
 
                 string email = user.Email;
                 string Dpassword = Decrpt(user.Password);
@@ -80,8 +83,11 @@ namespace Repo.Service
 
                 if (user != null && Dpassword == userLogin.Password)
                 {
-                    var token = GenerateJWTToken(email, userId);
-                    return token;
+                    UserLoginResult userLoginResult = new UserLoginResult();
+
+                    userLoginResult.userEntity = user;
+                    userLoginResult.Token = GenerateJWTToken(email, userId);
+                    return userLoginResult;
                   
                 }
                 else
@@ -96,11 +102,11 @@ namespace Repo.Service
             }
         }
 
-        public IEnumerable<UserEntity> GetAll()
+        public async Task<IEnumerable<UserEntity>> GetAll()
         {
             try
             {
-                var users = fundoContext.Users.ToList();
+                var users = await fundoContext.Users.ToListAsync();
 
 
                 if (users != null)
@@ -119,13 +125,11 @@ namespace Repo.Service
             }
         }
 
-        public UserEntity GetById(long userId)
+        public async Task<UserEntity> GetById(long userId)
         {
             try
             {
-                var user = fundoContext.Users.FirstOrDefault(x => x.UserID == userId);
-
-
+                var user = await fundoContext.Users.FirstOrDefaultAsync(x => x.UserID == userId);
 
                 if (user != null)
                 {
@@ -144,38 +148,17 @@ namespace Repo.Service
         }
 
 
-        public string GenerateJWTToken(string email, string userId)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var Key = Encoding.ASCII.GetBytes(Iconfiguration["JWT:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new System.Security.Claims.ClaimsIdentity(
-                    new Claim[]
-                    {
-                        new Claim(ClaimTypes.Email, email),
-                        new Claim("UserID", userId)
-                    }
-                    
-                    ),
-              
-                Expires = DateTime.UtcNow.AddMinutes(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Key), SecurityAlgorithms.HmacSha256)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-
-        }
+        
 
 
-        public string ForgetPassword(string email)
+        public async Task<string> ForgetPassword(string email)
         {
             try
             {
                 UserEntity user = new UserEntity();
 
 
-                user = fundoContext.Users.FirstOrDefault(x => x.Email == email);
+                user = await fundoContext.Users.FirstOrDefaultAsync(x => x.Email == email);
                 
                 string userId = user.UserID.ToString();
 
@@ -205,27 +188,23 @@ namespace Repo.Service
 
         }
 
-        public bool ResetPassword(string Token, string Pass, string CPass)
+        public async Task<bool> ResetPassword(long UserId, string Pass, string CPass)
         {
-
-            string GetEmail = jwtToken(Token);
-            //string GetuserId = User.FindFirst("UserID").Value.ToString();
 
             try
             {
+
                 UserEntity user = new UserEntity();
 
+                user = await fundoContext.Users.FirstOrDefaultAsync(x => x.UserID == UserId);
 
-                user = fundoContext.Users.FirstOrDefault(x => x.Email == GetEmail);
-                
-                
                 if (user != null && Pass == CPass)
                 {
                     user.Password = EncryptPass(Pass);
 
                     fundoContext.Users.Update(user);
 
-                    fundoContext.SaveChanges();
+                    await fundoContext.SaveChangesAsync();
 
                     return true;
                 }
@@ -243,7 +222,7 @@ namespace Repo.Service
 
         }
 
-        public string EncryptPass(string password)
+        private string EncryptPass(string password)
         {
             try
             {
@@ -260,7 +239,7 @@ namespace Repo.Service
             }
         }
 
-        public string Decrpt(string encodedData)
+        private string Decrpt(string encodedData)
         {
             try
             {
@@ -280,13 +259,29 @@ namespace Repo.Service
             }
         }
 
-        public string jwtToken(string token)
+    
+
+        private string GenerateJWTToken(string email, string userId)
         {
-            var decodedToken = token;
-            var handlaer = new JwtSecurityTokenHandler();
-            var jsonToken = handlaer.ReadJwtToken(decodedToken);
-            var result = jsonToken.Claims.FirstOrDefault().Value;
-            return result;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var Key = Encoding.ASCII.GetBytes(Iconfiguration["JWT:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new System.Security.Claims.ClaimsIdentity(
+                    new Claim[]
+                    {
+                        new Claim(ClaimTypes.Email, email),
+                        new Claim("UserID", userId)
+                    }
+
+                    ),
+
+                Expires = DateTime.UtcNow.AddMinutes(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Key), SecurityAlgorithms.HmacSha256)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+
         }
 
 
