@@ -1,20 +1,20 @@
 ﻿using EFCoreCodeFirstSample.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Repo.Entities
 {
-    public class ColabEntity
+    public class LabelEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ColabId { get; set; }
-        public string Email { get; set; }
+        public long LabelId { get; set; }
 
+        public string LabelName { get; set; }
 
         [ForeignKey("Users")]
         public long userId { get; set; }
@@ -28,5 +28,4 @@ namespace Repo.Entities
         [JsonIgnore]
         public virtual NoteEntity Note { get; set; }
     }
-
 }

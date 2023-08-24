@@ -53,6 +53,9 @@ namespace FundoNote
             services.AddTransient<IColabRepository, ColabRepository>();
             services.AddTransient<IColabBussiness, ColabBussiness>();
 
+            services.AddTransient<ILabelRepository, LabelRepository>();
+            services.AddTransient<ILabelBussiness, LabelBussiness>();
+
 
 
             services.AddControllers();

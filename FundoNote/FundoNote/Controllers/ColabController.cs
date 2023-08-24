@@ -80,7 +80,7 @@ namespace FundoNote.Controllers
             {
                 var result = colabBussiness.DeleteColab(ColabId, NoteId, UserId);
 
-                if (result != true)
+                if (result == true)
                 {
                     return Ok(new { sucess = true, message = "Colaboration Remove Successfully", data = result });
                 }

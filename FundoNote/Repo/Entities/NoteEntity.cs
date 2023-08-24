@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Repo.Entities
 {
@@ -37,6 +38,8 @@ namespace Repo.Entities
         [ForeignKey("Users")]
 
         public long userId { get; set; }
+
+        [JsonIgnore]
         public virtual UserEntity User { get; set; }
     }
 }
