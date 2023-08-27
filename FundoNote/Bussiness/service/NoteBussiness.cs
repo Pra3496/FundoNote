@@ -6,6 +6,7 @@ using Repo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Bussiness.service
 {
@@ -18,23 +19,11 @@ namespace Bussiness.service
             this.noteRepository = noteRepository;
         }
 
-        public NoteEntity CreateNote(NoteModel model, long UserId)
+        public async Task<NoteEntity> CreateNote(NoteModel model, long UserId)
         {
             try
             {
-                return noteRepository.CreateNote(model, UserId);
-            }
-            catch(Exception ex) 
-            {
-                throw ex;
-            }
-        }
-
-        public IEnumerable<NoteEntity> GetAll(long UserId)
-        {
-            try
-            {
-                return noteRepository.GetAll(UserId);
+                return await noteRepository.CreateNote(model, UserId);
             }
             catch (Exception ex)
             {
@@ -42,11 +31,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity UpdateNote(NoteUpdateModel model, long NoteId, long UserId)
+        public async Task<IEnumerable<NoteEntity>> GetAll(long UserId)
         {
             try
             {
-                return noteRepository.UpdateNote(model, NoteId, UserId);
+                return await noteRepository.GetAll(UserId);
             }
             catch (Exception ex)
             {
@@ -54,11 +43,23 @@ namespace Bussiness.service
             }
         }
 
-        public bool RemoveNote(long NoteId, long UserId)
+        public async Task<NoteEntity> UpdateNote(NoteUpdateModel model, long NoteId, long UserId)
         {
             try
             {
-                return noteRepository.RemoveNote(NoteId, UserId);
+                return await noteRepository.UpdateNote(model, NoteId, UserId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<bool> RemoveNote(long NoteId, long UserId)
+        {
+            try
+            {
+                return await noteRepository.RemoveNote(NoteId, UserId);
             }
             catch (Exception ex)
             {
@@ -67,11 +68,11 @@ namespace Bussiness.service
 
         }
 
-        public NoteEntity IsArchive(long NoteId, long userId)
+        public async Task<NoteEntity> IsArchive(long NoteId, long userId)
         {
             try
             {
-                return noteRepository.IsArchive(NoteId, userId);
+                return await noteRepository.IsArchive(NoteId, userId);
             }
             catch (Exception ex)
             {
@@ -79,11 +80,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity IsPin(long NoteId, long userId)
+        public async Task<NoteEntity> IsPin(long NoteId, long userId)
         {
             try
             {
-                return noteRepository.IsPin(NoteId, userId);
+                return await noteRepository.IsPin(NoteId, userId);
             }
             catch (Exception ex)
             {
@@ -91,11 +92,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity IsTrash(long NoteId, long userId)
+        public async Task<NoteEntity> IsTrash(long NoteId, long userId)
         {
             try
             {
-                return noteRepository.IsTrash(NoteId, userId);
+                return await noteRepository.IsTrash(NoteId, userId);
             }
             catch (Exception ex)
             {
@@ -103,11 +104,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity ChangeColor(string color, long NoteId, long userId)
+        public async Task<NoteEntity> ChangeColor(string color, long NoteId, long userId)
         {
             try
             {
-                return noteRepository.ChangeColor(color, NoteId, userId);
+                return await noteRepository.ChangeColor(color, NoteId, userId);
             }
             catch (Exception ex)
             {
@@ -115,11 +116,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity SetReminder(long NoteId, long userId, DateTime date)
+        public async Task<NoteEntity> SetReminder(long NoteId, long userId, DateTime date)
         {
             try
             {
-                return noteRepository.SetReminder(NoteId, userId, date);    
+                return await noteRepository.SetReminder(NoteId, userId, date);
             }
             catch (Exception ex)
             {
@@ -127,11 +128,11 @@ namespace Bussiness.service
             }
         }
 
-        public NoteEntity UploadImage(long userId, long NoteId, IFormFile image)
+        public async Task<NoteEntity> UploadImage(long userId, long NoteId, IFormFile image)
         {
             try
             {
-                return noteRepository.UploadImage(userId, NoteId, image);
+                return await noteRepository.UploadImage(userId, NoteId, image);
             }
             catch (Exception ex)
             {

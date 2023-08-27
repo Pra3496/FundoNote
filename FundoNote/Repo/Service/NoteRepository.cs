@@ -3,6 +3,7 @@ using CloudinaryDotNet.Actions;
 using Common.Model;
 using EFCoreCodeFirstSample.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Repo.Context;
 using Repo.Entities;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Repo.Service
 {
@@ -28,7 +30,7 @@ namespace Repo.Service
             this.context = context;
         }
 
-        public NoteEntity CreateNote(NoteModel model, long UserId)
+        public async Task<NoteEntity> CreateNote(NoteModel model, long UserId)
         {
             try
             {
@@ -43,10 +45,10 @@ namespace Repo.Service
                 noteEntity.UpdateTime = DateTime.Now;
                 noteEntity.userId = UserId;
 
-                if(noteEntity != null)
+                if (noteEntity != null)
                 {
-                    context.Notes.Add(noteEntity);
-                    context.SaveChanges();
+                    await context.Notes.AddAsync(noteEntity);
+                    await context.SaveChangesAsync();
                     return noteEntity;
                 }
                 else
@@ -54,20 +56,20 @@ namespace Repo.Service
                     return null;
                 }
 
-               
+
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-           
+
         }
 
-        public IEnumerable<NoteEntity> GetAll(long UserId)
+        public async Task<IEnumerable<NoteEntity>> GetAll(long UserId)
         {
             try
             {
-                var users = context.Notes.ToList();
+                var users = await context.Notes.ToListAsync();
 
                 var specificUsers = users.FindAll(x => x.userId == UserId);
 
@@ -86,22 +88,22 @@ namespace Repo.Service
             }
         }
 
-        public NoteEntity UpdateNote(NoteUpdateModel model, long NoteId, long UserId)
+        public async Task<NoteEntity> UpdateNote(NoteUpdateModel model, long NoteId, long UserId)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == UserId && x.NoteId == NoteId);
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == UserId && x.NoteId == NoteId);
 
 
-                if(noteEntity != null)
+                if (noteEntity != null)
                 {
                     noteEntity.Tittle = model.Tittle;
                     noteEntity.Note = model.Note;
                     noteEntity.UpdateTime = DateTime.Now;
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return noteEntity;
 
@@ -110,30 +112,30 @@ namespace Repo.Service
                 {
                     return null;
                 }
-                
+
 
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
 
 
-        public bool RemoveNote(long NoteId, long UserId)
+        public async Task<bool> RemoveNote(long NoteId, long UserId)
         {
             try
             {
 
-                var user = context.Notes.FirstOrDefault(x => x.NoteId == NoteId && x.userId == UserId);
+                var user = await context.Notes.FirstOrDefaultAsync(x => x.NoteId == NoteId && x.userId == UserId);
 
 
                 if (user != null)
                 {
                     context.Notes.Remove(user);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return true;
 
@@ -153,18 +155,18 @@ namespace Repo.Service
             }
         }
 
-        public NoteEntity IsArchive(long NoteId, long userId)
+        public async Task<NoteEntity> IsArchive(long NoteId, long userId)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == userId && x.NoteId == NoteId);
 
 
                 if (noteEntity != null)
                 {
-                    if(noteEntity.IsArchive == false)
+                    if (noteEntity.IsArchive == false)
                     {
                         noteEntity.IsArchive = true;
                     }
@@ -172,10 +174,10 @@ namespace Repo.Service
                     {
                         noteEntity.IsArchive = false;
                     }
-                   
+
                     context.Notes.Update(noteEntity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return noteEntity;
 
@@ -195,13 +197,13 @@ namespace Repo.Service
             }
         }
 
-        public NoteEntity IsPin(long NoteId, long userId)
+        public async Task<NoteEntity> IsPin(long NoteId, long userId)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == userId && x.NoteId == NoteId);
 
 
                 if (noteEntity != null)
@@ -217,7 +219,7 @@ namespace Repo.Service
 
                     context.Notes.Update(noteEntity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return noteEntity;
 
@@ -237,13 +239,13 @@ namespace Repo.Service
             }
         }
 
-        public NoteEntity IsTrash(long NoteId, long userId)
+        public async Task<NoteEntity> IsTrash(long NoteId, long userId)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == userId && x.NoteId == NoteId);
 
 
                 if (noteEntity != null)
@@ -257,42 +259,6 @@ namespace Repo.Service
                         noteEntity.IsTrash = false;
                     }
 
-                    context.Notes.Update(noteEntity);   
-
-                    context.SaveChanges();
-
-                    return noteEntity;
-
-                }
-                else
-                {
-                    return null;
-                }
-
-
-
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public NoteEntity ChangeColor(string color, long NoteId, long userId)
-        {
-            try
-            {
-                NoteEntity noteEntity = new NoteEntity();
-
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
-
-
-                if (noteEntity != null)
-                {
-                   
-                    noteEntity.Color = color;
-               
                     context.Notes.Update(noteEntity);
 
                     context.SaveChanges();
@@ -315,13 +281,49 @@ namespace Repo.Service
             }
         }
 
-        public NoteEntity SetReminder(long NoteId, long userId, DateTime date)
+        public async Task<NoteEntity> ChangeColor(string color, long NoteId, long userId)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == userId && x.NoteId == NoteId);
+
+
+                if (noteEntity != null)
+                {
+
+                    noteEntity.Color = color;
+
+                    context.Notes.Update(noteEntity);
+
+                    await context.SaveChangesAsync();
+
+                    return noteEntity;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<NoteEntity> SetReminder(long NoteId, long userId, DateTime date)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == userId && x.NoteId == NoteId);
 
 
                 if (noteEntity != null)
@@ -330,7 +332,7 @@ namespace Repo.Service
 
                     context.Notes.Update(noteEntity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return noteEntity;
 
@@ -351,7 +353,7 @@ namespace Repo.Service
         }
 
 
-        public NoteEntity UploadImage(long userId, long NoteId, IFormFile image)
+        public async Task<NoteEntity> UploadImage(long userId, long NoteId, IFormFile image)
         {
             try
             {
@@ -363,7 +365,7 @@ namespace Repo.Service
 
                 NoteEntity noteEntity = new NoteEntity();
 
-                noteEntity = context.Notes.FirstOrDefault(x => x.userId == userId && x.NoteId == NoteId);
+                noteEntity = await context.Notes.FirstOrDefaultAsync(x => x.userId == userId && x.NoteId == NoteId);
 
                 if (noteEntity != null)
                 {
@@ -381,7 +383,7 @@ namespace Repo.Service
 
                     context.Update(noteEntity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return noteEntity;
                 }
@@ -390,9 +392,9 @@ namespace Repo.Service
                     return noteEntity;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                throw ex; 
+                throw ex;
             }
         }
 

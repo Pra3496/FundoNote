@@ -1,14 +1,22 @@
 ﻿using Bussiness.Interface;
+using Bussiness.service;
 using Common.Model;
+using EFCoreCodeFirstSample.Models;
 using FundoNote.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using Repo.Entities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNote.Controllers
 {
@@ -17,28 +25,32 @@ namespace FundoNote.Controllers
     [Authorize]
     public class NoteController : ControllerBase
     {
+        private readonly IUserBussiness userBussiness;
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
         public readonly INoteBussiness noteBussiness;
 
         public readonly AppSettings appSettings;
 
-        public NoteController(INoteBussiness noteBussiness)
+        public NoteController(INoteBussiness noteBussiness, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.noteBussiness = noteBussiness;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
           
         }
 
         [HttpPost]
-        [Route("addNote")]
-        public IActionResult CreateNote(NoteModel model)
+        public async Task<IActionResult> CreateNote(NoteModel model)
         {
             try
             {
-              
+
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.noteBussiness.CreateNote(model, UserId);
+                var result = await this.noteBussiness.CreateNote(model, UserId);
 
-                if(result != null)
+                if (result != null)
                 {
                     return Ok(new { sucess = true, message = "Note Created Successfully", data = result });
                 }
@@ -48,7 +60,7 @@ namespace FundoNote.Controllers
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -56,14 +68,13 @@ namespace FundoNote.Controllers
         }
 
         [HttpGet]
-        [Route("AllNote")]
-        public IActionResult GetAllNote(long userId)
+        public async Task<IActionResult> GetAllNote(long userId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.noteBussiness.GetAll(UserId);
+                var result = await this.noteBussiness.GetAll(UserId);
 
 
                 if (result != null)
@@ -82,16 +93,15 @@ namespace FundoNote.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateNote")]
-        public IActionResult UpdateNote(NoteUpdateModel model, long NoteId)
+        public async Task<IActionResult> UpdateNote(NoteUpdateModel model, long NoteId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-               
 
-                var result = this.noteBussiness.UpdateNote(model, NoteId, UserId);
+
+                var result = await this.noteBussiness.UpdateNote(model, NoteId, UserId);
 
 
                 if (result != null)
@@ -110,16 +120,15 @@ namespace FundoNote.Controllers
         }
 
         [HttpDelete]
-        [Route("removeNote")]
-        public IActionResult RemoveNote(long NoteId)
+        public async Task<IActionResult> RemoveNote(long NoteId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-               
 
-                var result = this.noteBussiness.RemoveNote(NoteId, UserId);
+
+                var result = await this.noteBussiness.RemoveNote(NoteId, UserId);
 
 
                 if (result != false)
@@ -139,14 +148,14 @@ namespace FundoNote.Controllers
 
 
         [HttpPatch]
-        [Route("IsAchive")]
-        public IActionResult GetArchive(long NoteId)
+        [Route("Archive")]
+        public async Task<IActionResult> GetArchive(long NoteId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.noteBussiness.IsArchive(NoteId, UserId);
+                var result = await this.noteBussiness.IsArchive(NoteId, UserId);
 
                 if (result != null)
                 {
@@ -164,8 +173,8 @@ namespace FundoNote.Controllers
         }
 
         [HttpPatch]
-        [Route("IsPin")]
-        public IActionResult GetPin(long NoteId)
+        [Route("Pin")]
+        public async Task<IActionResult> GetPin(long NoteId)
         {
             try
             {
@@ -189,14 +198,14 @@ namespace FundoNote.Controllers
         }
 
         [HttpPatch]
-        [Route("IsTrash")]
-        public IActionResult GetIsTrash(long NoteId)
+        [Route("Trash")]
+        public async Task<IActionResult> GetIsTrash(long NoteId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.noteBussiness.IsTrash(NoteId, UserId);
+                var result = await this.noteBussiness.IsTrash(NoteId, UserId);
 
                 if (result != null)
                 {
@@ -214,14 +223,14 @@ namespace FundoNote.Controllers
         }
 
         [HttpPatch]
-        [Route("ChangeColor")]
-        public IActionResult ChangeColor(string color, long NoteId)
+        [Route("Color")]
+        public async Task<IActionResult> ChangeColor(string color, long NoteId)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.noteBussiness.ChangeColor(color, NoteId, UserId); 
+                var result = await this.noteBussiness.ChangeColor(color, NoteId, UserId);
 
                 if (result != null)
                 {
@@ -239,14 +248,14 @@ namespace FundoNote.Controllers
         }
 
         [HttpPatch]
-        [Route("Uploadimage")]
-        public IActionResult UploadImage(long NoteId, IFormFile image)
+        [Route("image")]
+        public async Task<IActionResult> UploadImage(long NoteId, IFormFile image)
         {
             try
             {
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.noteBussiness.UploadImage(UserId, NoteId, image);
+                var result = await this.noteBussiness.UploadImage(UserId, NoteId, image);
 
                 if (result != null)
                 {
@@ -263,6 +272,7 @@ namespace FundoNote.Controllers
             }
         }
 
+       
 
 
 

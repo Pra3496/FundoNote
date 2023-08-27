@@ -1,4 +1,5 @@
 ﻿using Common.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Repo.Context;
 using Repo.Entities;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Repo.Service
 {
@@ -22,7 +24,7 @@ namespace Repo.Service
             this.context = context;
         }
 
-        public ColabEntity CreateColab(long NoteId, long UserId,ColabModel model)
+        public async Task<ColabEntity> CreateColab(long NoteId, long UserId,ColabModel model)
         {
             try
             {
@@ -37,9 +39,9 @@ namespace Repo.Service
                
                 if (colabEntity != null)
                 {
-                    context.Colab.Add(colabEntity);
+                    await context.Colab.AddAsync(colabEntity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return colabEntity;
                 }
@@ -56,11 +58,11 @@ namespace Repo.Service
         }
        
 
-        public IEnumerable<ColabEntity> GetAll(long NoteId, long UserId)
+        public async Task<IEnumerable<ColabEntity>> GetAll(long NoteId, long UserId)
         {
             try
             {
-                var result = context.Colab.Where(x=> x.userId == UserId && x.NoteId == NoteId).ToList();
+                var result = await context.Colab.Where(x=> x.userId == UserId && x.NoteId == NoteId).ToListAsync();
 
                 if(result != null)
                 {
@@ -78,17 +80,17 @@ namespace Repo.Service
             }
         }
 
-        public bool DeleteColab(long ColabId, long NoteId, long UserId)
+        public async Task<bool> DeleteColab(long ColabId, long NoteId, long UserId)
         {
             try
             {
-                var result = context.Colab.FirstOrDefault(x => x.userId == UserId && x.NoteId == NoteId && x.ColabId == ColabId);
+                var result = await context.Colab.FirstOrDefaultAsync(x => x.userId == UserId && x.NoteId == NoteId && x.ColabId == ColabId);
 
                 if (result != null)
                 {
                     context.Colab.Remove(result);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return true;
                 }

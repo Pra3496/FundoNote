@@ -3,15 +3,16 @@ using Repo.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Bussiness.Interface
 {
     public interface IColabBussiness
     {
-        public ColabEntity CreateColab(long NoteId, long UserId, ColabModel model);
+        Task<ColabEntity> CreateColab(long NoteId, long UserId, ColabModel model);
 
-        public IEnumerable<ColabEntity> GetAll(long NoteId, long UserId);
+        Task<IEnumerable<ColabEntity>> GetAll(long NoteId, long UserId);
 
-        public bool DeleteColab(long ColabId, long NoteId, long UserId);
+        Task<bool> DeleteColab(long ColabId, long NoteId, long UserId);
     }
 }

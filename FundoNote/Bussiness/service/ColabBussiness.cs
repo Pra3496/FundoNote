@@ -6,6 +6,7 @@ using Repo.Service;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Bussiness.service
 {
@@ -18,11 +19,12 @@ namespace Bussiness.service
             this.colabRepository = IcolabRepository;
         }
 
-        public ColabEntity CreateColab(long NoteId, long UserId, ColabModel model)
+        
+        public async Task<ColabEntity> CreateColab(long NoteId, long UserId, ColabModel model)
         {
             try
             {
-                return colabRepository.CreateColab(NoteId, UserId, model);
+                return await colabRepository.CreateColab(NoteId, UserId, model);
             }
             catch (Exception ex)
             {
@@ -30,11 +32,11 @@ namespace Bussiness.service
             }
         }
 
-        public IEnumerable<ColabEntity> GetAll(long NoteId, long UserId)
+        public async Task<IEnumerable<ColabEntity>> GetAll(long NoteId, long UserId)
         {
             try
             {
-                return colabRepository.GetAll(NoteId, UserId);
+                return await colabRepository.GetAll(NoteId, UserId);
             }
             catch (Exception ex)
             {
@@ -42,11 +44,11 @@ namespace Bussiness.service
             }
         }
 
-        public bool DeleteColab(long ColabId, long NoteId, long UserId)
+        public async Task<bool> DeleteColab(long ColabId, long NoteId, long UserId)
         {
             try
             {
-                return colabRepository.DeleteColab(ColabId, NoteId, UserId);
+                return await colabRepository.DeleteColab(ColabId, NoteId, UserId);
             }
             catch (Exception ex)
             {

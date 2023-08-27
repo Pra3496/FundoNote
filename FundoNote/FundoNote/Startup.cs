@@ -110,6 +110,8 @@ namespace FundoNote
                 });
             });
 
+           
+
 
             // services.AddScoped<IUserRepo, UserRepo>();
 

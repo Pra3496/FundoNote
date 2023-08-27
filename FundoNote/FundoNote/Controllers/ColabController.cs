@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FundoNote.Controllers
 {
@@ -21,14 +22,13 @@ namespace FundoNote.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
-        public IActionResult GetAll(long NoteId) 
+        public async Task<IActionResult> GetAll(long NoteId) 
         {
             long UserId = long.Parse(User.FindFirst("UserID").Value);
 
             try
             {
-                var result = colabBussiness.GetAll(NoteId, UserId);
+                var result = await colabBussiness.GetAll(NoteId, UserId);
                 if(result != null)
                 {
                     return Ok(new { sucess = true, message = "Colaboration Create Successfully", data = result });
@@ -46,14 +46,13 @@ namespace FundoNote.Controllers
 
 
         [HttpPost]
-        [Route("Create")]
-        public IActionResult Create(long NoteId, ColabModel model)
+        public async Task<IActionResult> Create(long NoteId, ColabModel model)
         {
             long UserId = long.Parse(User.FindFirst("UserID").Value);
 
             try
             {
-                var result = colabBussiness.CreateColab(NoteId, UserId, model);
+                var result = await colabBussiness.CreateColab(NoteId, UserId, model);
 
                 if (result != null)
                 {
@@ -71,14 +70,13 @@ namespace FundoNote.Controllers
         }
 
         [HttpDelete]
-        [Route("Remove")]
-        public IActionResult DeleteColab(long ColabId, long NoteId)
+        public async Task<IActionResult> DeleteColab(long ColabId, long NoteId)
         {
             long UserId = long.Parse(User.FindFirst("UserID").Value);
 
             try
             {
-                var result = colabBussiness.DeleteColab(ColabId, NoteId, UserId);
+                var result = await colabBussiness.DeleteColab(ColabId, NoteId, UserId);
 
                 if (result == true)
                 {
