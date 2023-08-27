@@ -41,6 +41,10 @@ namespace Repo.Service
                 noteEntity.Color = model.Color;
                 noteEntity.RemindMe = model.RemindMe;
 
+                noteEntity.IsArchive = false;
+                noteEntity.IsPin = false;
+                noteEntity.IsTrash = false;
+
                 noteEntity.CreateTime = DateTime.Now;
                 noteEntity.UpdateTime = DateTime.Now;
                 noteEntity.userId = UserId;
@@ -69,19 +73,18 @@ namespace Repo.Service
         {
             try
             {
-                var users = await context.Notes.ToListAsync();
-
-                var specificUsers = users.FindAll(x => x.userId == UserId);
+              
+                var specificUsers = context.Notes.Where(x => x.userId == UserId).ToListAsync();
 
                 if (specificUsers != null)
                 {
-                    return specificUsers;
+                    return await specificUsers;
                 }
                 else
                 {
                     return null;
                 }
-            }
+            } 
             catch (Exception ex)
             {
                 throw ex;

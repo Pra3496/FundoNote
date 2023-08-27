@@ -110,7 +110,13 @@ namespace FundoNote
                 });
             });
 
-           
+            services.AddMemoryCache();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
+
 
 
             // services.AddScoped<IUserRepo, UserRepo>();

@@ -25,7 +25,6 @@ namespace FundoNote.Controllers
     [Authorize]
     public class NoteController : ControllerBase
     {
-        private readonly IUserBussiness userBussiness;
         private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
         public readonly INoteBussiness noteBussiness;
@@ -272,7 +271,38 @@ namespace FundoNote.Controllers
             }
         }
 
-       
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllNotesUsingRedisCache()
+        {
+            long UserId = long.Parse(User.FindFirst("UserID").Value);
+
+            var cacheKey = "customerList";
+            string serializedCustomerList;
+          
+            var redisCustomerList = await distributedCache.GetAsync(cacheKey);
+            if (redisCustomerList != null)
+            {
+                serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
+                var notes = JsonConvert.DeserializeObject<IEnumerable<NoteEntity>>(serializedCustomerList);
+
+                return this.Ok(new { success = true, message = "Retrive All Successful ", data = notes });
+            }
+            else
+            {
+                var notes = await this.noteBussiness.GetAll(UserId);
+                serializedCustomerList = JsonConvert.SerializeObject(notes);
+                redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
+                return this.Ok(new { success = true, message = "Retrive All Successful ", data = notes });
+            }
+
+        }
+
+
 
 
 
