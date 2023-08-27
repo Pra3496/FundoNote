@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace FundoNote.Controllers
 {
@@ -25,7 +26,7 @@ namespace FundoNote.Controllers
         
 
         [HttpPost]
-        public IActionResult AddLabel(LabelModel model)
+        public async Task<IActionResult> AddLabel(LabelModel model)
         {
             try
             {
@@ -34,7 +35,7 @@ namespace FundoNote.Controllers
 
                 model.userId= UserId;
 
-                var result = this.labelBussiness.AddLabel(model);
+                var result = await this.labelBussiness.AddLabel(model);
 
                 if (result != null)
                 {
@@ -53,14 +54,14 @@ namespace FundoNote.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(long noteId)
+        public async Task<IActionResult> Get(long noteId)
         {
             try
             {
 
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.labelBussiness.GetLabels(UserId, noteId);
+                var result = await this.labelBussiness.GetLabels(UserId, noteId);
 
                 if (result != null)
                 {
@@ -80,14 +81,14 @@ namespace FundoNote.Controllers
 
 
         [HttpPut]
-        public IActionResult UpdateLabel(string LabelName, long LabelId)
+        public async Task<IActionResult> UpdateLabel(string LabelName, long LabelId)
         {
             try
             {
 
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.labelBussiness.UpdateLabel(LabelName, UserId, LabelId);
+                var result = await this.labelBussiness.UpdateLabel(LabelName, UserId, LabelId);
 
                 if (result != null)
                 {
@@ -106,14 +107,14 @@ namespace FundoNote.Controllers
         }
 
         [HttpDelete]
-        public IActionResult RemoveLabel(long NoteId, long LabelId)
+        public async Task<IActionResult> RemoveLabel(long NoteId, long LabelId)
         {
             try
             {
 
                 long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-                var result = this.labelBussiness.RemoveLabel(UserId, NoteId, LabelId);
+                var result = await this.labelBussiness.RemoveLabel(UserId, NoteId, LabelId);
                     
 
                 if (result != false)

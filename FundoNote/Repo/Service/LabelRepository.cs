@@ -1,4 +1,5 @@
 ﻿using Common.Model;
+using Microsoft.EntityFrameworkCore;
 using Repo.Context;
 using Repo.Entities;
 using Repo.Interface;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Repo.Service
 {
@@ -17,7 +19,7 @@ namespace Repo.Service
             this.context = fundoContext;
         }
 
-        public LabelEntity AddLabel(LabelModel model)
+        public async Task<LabelEntity> AddLabel(LabelModel model)
         {
             try
             {
@@ -29,9 +31,9 @@ namespace Repo.Service
 
                 if (labelEntity != null)
                 {
-                    context.Labels.Add(labelEntity);
+                    await context.Labels.AddAsync(labelEntity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     return labelEntity;
                 }
@@ -47,12 +49,12 @@ namespace Repo.Service
             }
         }
 
-        public IEnumerable<LabelEntity> GetLabels(long UserId, long NoteId)
+        public async Task<IEnumerable<LabelEntity>> GetLabels(long UserId, long NoteId)
         {
 
             try
             {
-                var result = context.Labels.Where(x => x.userId == UserId && x.NoteId == NoteId);
+                var result = await context.Labels.Where(x => x.userId == UserId && x.NoteId == NoteId).ToListAsync();
 
                 if (result != null)
                 {
@@ -71,16 +73,16 @@ namespace Repo.Service
 
         }
 
-        public bool RemoveLabel(long UserId, long NoteId, long LabelId)
+        public async Task<bool> RemoveLabel(long UserId, long NoteId, long LabelId)
         {
             try
             {
-                var result = context.Labels.FirstOrDefault(x => x.userId == UserId && x.NoteId == NoteId && x.LabelId == LabelId);
+                var result = await context.Labels.FirstOrDefaultAsync(x => x.userId == UserId && x.NoteId == NoteId && x.LabelId == LabelId);
 
                 if (result != null)
                 {
                     context.Remove(result);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                     return true;
                 }
                 else
@@ -96,13 +98,13 @@ namespace Repo.Service
 
         }
 
-        public LabelEntity UpdateLabel(string LabelName, long UserId, long LabelId)
+        public async Task<LabelEntity> UpdateLabel(string LabelName, long UserId, long LabelId)
         {
             try
             {
                 LabelEntity labelEntity = new LabelEntity();
 
-                labelEntity = context.Labels.FirstOrDefault(x => x.userId == UserId && x.LabelId == LabelId);
+                labelEntity = await context.Labels.FirstOrDefaultAsync(x => x.userId == UserId && x.LabelId == LabelId);
 
 
 
@@ -111,7 +113,7 @@ namespace Repo.Service
                     labelEntity.LabelName = LabelName;
 
                     context.Update(labelEntity);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                     return labelEntity;
                 }
                 else
