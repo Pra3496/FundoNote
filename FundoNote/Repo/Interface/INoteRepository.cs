@@ -22,6 +22,7 @@ namespace Repo.Interface
         Task<NoteEntity> ChangeColor(string color, long NoteId, long userId);
         Task<NoteEntity> SetReminder(long NoteId, long userId, DateTime date);
         Task<NoteEntity> UploadImage(long userId, long NoteId, IFormFile image);
+        Task<IEnumerable<NoteEntity>> GetSearchResult(string sample, long UserId);
 
 
     }

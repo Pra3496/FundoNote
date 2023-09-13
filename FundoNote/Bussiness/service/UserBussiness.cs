@@ -26,9 +26,9 @@ namespace Bussiness.service
             {
                 return await userRepo.UserRegistration(userResgistrationModel);
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -38,9 +38,9 @@ namespace Bussiness.service
             {
                 return await userRepo.Login(userLogin);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -50,9 +50,9 @@ namespace Bussiness.service
             {
                 return await userRepo.GetAll();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -63,9 +63,9 @@ namespace Bussiness.service
             {
                 return await userRepo.ForgetPassword(email);
             }
-            catch (Exception)
+            catch (Exception ex )
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -75,9 +75,9 @@ namespace Bussiness.service
             {
                 return await userRepo.ResetPassword(UserId, Pass, CPass);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 

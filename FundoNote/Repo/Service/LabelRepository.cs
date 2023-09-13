@@ -45,7 +45,7 @@ namespace Repo.Service
             }
             catch(Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
 
         }
@@ -93,7 +93,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
 
         }
@@ -124,7 +124,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
 
         }

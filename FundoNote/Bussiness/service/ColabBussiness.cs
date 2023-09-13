@@ -28,19 +28,19 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
-        public async Task<IEnumerable<ColabEntity>> GetAll(long NoteId, long UserId)
+        public async Task<IEnumerable<ColabEntity>> GetAll(long UserId, string colabs)
         {
             try
             {
-                return await colabRepository.GetAll(NoteId, UserId);
+                return await colabRepository.GetAll(UserId, colabs);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -52,7 +52,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
     }

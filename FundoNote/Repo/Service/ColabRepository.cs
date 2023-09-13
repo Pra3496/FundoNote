@@ -53,18 +53,30 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
        
 
-        public async Task<IEnumerable<ColabEntity>> GetAll(long NoteId, long UserId)
+        public async Task<IEnumerable<ColabEntity>> GetAll(long UserId, string colabs)
         {
             try
             {
-                var result = await context.Colab.Where(x=> x.userId == UserId && x.NoteId == NoteId).ToListAsync();
+                List<ColabEntity> result = await context.Colab.Where(x=> x.userId == UserId).ToListAsync();
 
-                if(result != null)
+                var user = context.Users.FirstOrDefault(x => x.UserID == UserId);
+
+                var userEmail =  context.Colab.Where(x => x.Email == user.Email);
+
+                foreach (var colabEntity in userEmail)
+                {
+                    result.Add(colabEntity);
+                }
+
+                
+             
+
+                if (result != null)
                 {
                     return result;
                 }
@@ -76,7 +88,7 @@ namespace Repo.Service
             }
             catch(Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -102,7 +114,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 

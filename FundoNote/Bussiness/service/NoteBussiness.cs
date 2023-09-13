@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Bussiness.service
 {
@@ -27,7 +28,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -39,7 +40,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -51,7 +52,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -63,7 +64,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
 
         }
@@ -76,7 +77,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -88,7 +89,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -100,7 +101,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -112,7 +113,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -124,7 +125,7 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -136,7 +137,19 @@ namespace Bussiness.service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<NoteEntity>> GetSearchResult(string sample, long UserId)
+        {
+            try
+            {
+                return await noteRepository.GetSearchResult(sample, UserId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

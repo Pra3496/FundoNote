@@ -21,7 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
-
+using MassTransit;
 
 namespace FundoNote
 {
@@ -116,6 +116,19 @@ namespace FundoNote
             {
                 options.Configuration = "localhost:6379";
             });
+
+
+            services.AddMassTransit(config =>
+            {
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host("amqp://guest:guest@localhost:5672");
+
+
+                });
+            });
+
+            services.AddMassTransitHostedService();
 
 
 

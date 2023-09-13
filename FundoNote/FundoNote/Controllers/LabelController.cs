@@ -22,9 +22,6 @@ namespace FundoNote.Controllers
         }
 
 
-
-        
-
         [HttpPost]
         public async Task<IActionResult> AddLabel(LabelModel model)
         {
@@ -49,7 +46,7 @@ namespace FundoNote.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -75,7 +72,7 @@ namespace FundoNote.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -102,7 +99,7 @@ namespace FundoNote.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -129,7 +126,7 @@ namespace FundoNote.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 

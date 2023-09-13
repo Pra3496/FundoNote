@@ -1,8 +1,10 @@
 ﻿using Bussiness.Interface;
 using Common.Model;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,19 +18,24 @@ namespace FundoNote.Controllers
     {
         public readonly IColabBussiness colabBussiness;
 
-        public ColabController(IColabBussiness IcolabBussiness)
+        private readonly IPublishEndpoint publishEndpoint;
+
+        public ColabController(IColabBussiness IcolabBussiness, IPublishEndpoint publishEndpoint)
         {
             this.colabBussiness = IcolabBussiness;
+            this.publishEndpoint = publishEndpoint;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(long NoteId) 
+        public async Task<IActionResult> GetAll() 
         {
             long UserId = long.Parse(User.FindFirst("UserID").Value);
 
+            string colabs = User.FindFirst("Colabs").Value; 
+
             try
             {
-                var result = await colabBussiness.GetAll(NoteId, UserId);
+                var result = await colabBussiness.GetAll(UserId, colabs);
                 if(result != null)
                 {
                     return Ok(new { sucess = true, message = "Colaboration Create Successfully", data = result });
@@ -40,7 +47,7 @@ namespace FundoNote.Controllers
             }
             catch(Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -54,8 +61,17 @@ namespace FundoNote.Controllers
             {
                 var result = await colabBussiness.CreateColab(NoteId, UserId, model);
 
+
                 if (result != null)
                 {
+                    ColabEmailModel colabEmailModel = new ColabEmailModel()
+                    {
+                        ColabId = result.ColabId,
+                        Email = result.Email
+                    };
+
+                    await publishEndpoint.Publish<ColabEmailModel>(colabEmailModel);
+
                     return Ok(new { sucess = true, message = "Colaboration Create Successfully", data = result });
                 }
                 else
@@ -65,7 +81,7 @@ namespace FundoNote.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -89,7 +105,7 @@ namespace FundoNote.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 

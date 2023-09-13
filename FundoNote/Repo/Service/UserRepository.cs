@@ -62,7 +62,7 @@ namespace Repo.Service
             }
             catch
             {
-                throw;
+                throw new Exception(ex.Message);
             }
 
 
@@ -77,6 +77,9 @@ namespace Repo.Service
 
                 user = await fundoContext.Users.FirstOrDefaultAsync(x => x.Email == userLogin.Email);
 
+                var colabs = await fundoContext.Colab.Where(x => x.Email == userLogin.Email).ToListAsync();
+
+              
                 string email = user.Email;
                 string Dpassword = Decrpt(user.Password);
                 string userId = Convert.ToString(user.UserID);
@@ -97,7 +100,7 @@ namespace Repo.Service
             }
             catch(Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -120,7 +123,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -142,7 +145,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -163,6 +166,8 @@ namespace Repo.Service
 
                 
 
+
+
                 if (user != null)
                 {
                     string Token = GenerateJWTToken(email, userId);
@@ -181,7 +186,7 @@ namespace Repo.Service
             }
             catch
             {
-                throw;
+                throw new Exception(ex.Message);
             }
 
 
@@ -215,7 +220,7 @@ namespace Repo.Service
             }
             catch
             {
-                throw;
+                throw new Exception(ex.Message);
             }
 
 
@@ -234,7 +239,7 @@ namespace Repo.Service
             catch (Exception)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -254,7 +259,7 @@ namespace Repo.Service
             catch (Exception)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -270,7 +275,8 @@ namespace Repo.Service
                     new Claim[]
                     {
                         new Claim(ClaimTypes.Email, email),
-                        new Claim("UserID", userId)
+                        new Claim("UserID", userId),
+                        
                     }
 
                     ),
@@ -282,6 +288,8 @@ namespace Repo.Service
             return tokenHandler.WriteToken(token);
 
         }
+
+        
 
 
     }

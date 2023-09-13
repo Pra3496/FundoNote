@@ -11,7 +11,7 @@ namespace Repo.Interface
     {
         Task<ColabEntity> CreateColab(long NoteId, long UserId, ColabModel model);
 
-        Task<IEnumerable<ColabEntity>> GetAll(long NoteId, long UserId);
+        Task<IEnumerable<ColabEntity>> GetAll(long UserId, string colabs);
 
         Task<bool> DeleteColab(long ColabId, long NoteId, long UserId);
 

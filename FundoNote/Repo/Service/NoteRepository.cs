@@ -64,7 +64,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
 
         }
@@ -87,7 +87,7 @@ namespace Repo.Service
             } 
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -154,7 +154,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -196,7 +196,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -238,7 +238,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -280,7 +280,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -316,7 +316,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -351,7 +351,7 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -397,7 +397,33 @@ namespace Repo.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<IEnumerable<NoteEntity>> GetSearchResult(string sample, long UserId)
+        {
+            try
+            {
+                
+                var noteResult = await context.Notes.Where(x => (x.Note.Contains(sample) || x.Tittle.Contains(sample)) && x.userId == UserId).ToListAsync();
+
+                if (noteResult != null)
+                {
+                    return noteResult;
+                }
+                else
+                {
+                    return null;
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
