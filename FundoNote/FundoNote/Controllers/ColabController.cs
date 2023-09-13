@@ -31,7 +31,7 @@ namespace FundoNote.Controllers
         {
             long UserId = long.Parse(User.FindFirst("UserID").Value);
 
-            string colabs = User.FindFirst("Colabs").Value; 
+            string colabs = "123";
 
             try
             {

@@ -60,7 +60,7 @@ namespace Repo.Service
                 }
 
             }
-            catch
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -184,7 +184,7 @@ namespace Repo.Service
                 }
 
             }
-            catch
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -218,7 +218,7 @@ namespace Repo.Service
                 }
 
             }
-            catch
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -236,7 +236,7 @@ namespace Repo.Service
                 msg = Convert.ToBase64String(encode);
                 return msg;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw new Exception(ex.Message);
@@ -256,7 +256,7 @@ namespace Repo.Service
                 string result = new String(decoded_char);
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw new Exception(ex.Message);
